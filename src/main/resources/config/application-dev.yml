@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    name: DevDB
+    url: jdbc:mysql://localhost:3306/yom?createDatabaseIfNotExist=true
+    username: yom
+    password: yom
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true

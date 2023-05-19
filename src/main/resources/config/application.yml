@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: You Owe Me
+  profiles:
+    active: dev
