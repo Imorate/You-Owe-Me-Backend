@@ -32,15 +32,19 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean accountNonExpired = Boolean.TRUE;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean accountNonLocked = Boolean.TRUE;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean credentialsNonExpired = Boolean.TRUE;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = Boolean.FALSE;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
