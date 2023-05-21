@@ -13,5 +13,8 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-    open-in-view: false
     show-sql: true
+
+logging:
+  level:
+    web: trace
