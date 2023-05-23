@@ -1,6 +1,6 @@
 # You Owe Me - Backend
 ## Requirements
-[Requirements](requirements.md)
+[Requirements](doc/requirements.md)
 
 ## ER
 [DBDocs table structure](https://dbdocs.io/dev.imorate/You-Owe-Me?view=table_structure)
