@@ -1,6 +1,7 @@
 package ir.imorate.yom.security.entity;
 
 import net.datafaker.Faker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +19,29 @@ class UserTest {
     @Autowired
     private Faker faker;
 
+    private String username;
+
+    private String password;
+
+    private String email;
+
+    @BeforeEach
+    void setUp() {
+        username = faker.name().username();
+        email = faker.internet().emailAddress();
+        password = faker.internet().password(8, 256, true, true, true);
+    }
+
     @Test
     @DisplayName("User initial values")
     void testInitialValuesForUser() {
-        String userName = faker.name().username();
-        String email = faker.internet().emailAddress();
-        String password = faker.internet().password(8, 256, true, true, true);
-
         User user = User.builder()
-                .username(userName)
+                .username(username)
                 .password(password)
                 .email(email)
                 .build();
 
-        assertThat(user.getUsername()).isEqualTo(userName);
+        assertThat(user.getUsername()).isEqualTo(username);
         assertThat(user.getPassword()).isEqualTo(password);
         assertThat(user.getEnabled()).isFalse();
         assertThat(user.getAccountNonLocked()).isTrue();
@@ -42,17 +52,14 @@ class UserTest {
     @Test
     @DisplayName("User toString() method")
     void testToStringUser() {
-        String userName = faker.name().username();
-        String email = faker.internet().emailAddress();
-
         User user = User.builder()
-                .username(userName)
+                .username(username)
                 .email(email)
                 .build();
 
         String expectedToString = String.format("User(id=null, username=%s, email=%s, accountNonExpired=%b," +
                         " accountNonLocked=%b, credentialsNonExpired=%b, enabled=%b)",
-                userName,
+                username,
                 email,
                 user.getAccountNonExpired(),
                 user.getAccountNonLocked(),
@@ -65,11 +72,8 @@ class UserTest {
     @Test
     @DisplayName("User roles")
     void testUserRoles() {
-        String userName = faker.name().username();
-        String email = faker.internet().emailAddress();
-
         User user = User.builder()
-                .username(userName)
+                .username(username)
                 .email(email)
                 .build();
 
