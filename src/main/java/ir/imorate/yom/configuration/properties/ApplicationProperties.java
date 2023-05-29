@@ -14,7 +14,7 @@ public class ApplicationProperties {
     /**
      * Name of the application.
      */
-    private String name = "You Owe Me";
+    private String name;
 
     /**
      * Description of the application.
@@ -24,6 +24,6 @@ public class ApplicationProperties {
     /**
      * Version of the application.
      */
-    private String version = "1.0.0";
+    private String version;
 
 }
