@@ -5,3 +5,8 @@ spring:
     active: dev
   jpa:
     open-in-view: false
+
+app:
+  name: You Owe Me
+  description: An accounting application among friends
+  version: 1.0.0
