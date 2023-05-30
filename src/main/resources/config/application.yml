@@ -9,4 +9,4 @@ spring:
 app:
   name: You Owe Me
   description: An accounting application among friends
-  version: 1.0.0
+  version: 0.0.1
