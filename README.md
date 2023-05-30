@@ -1,3 +1,4 @@
+[![Java CI with Gradle](https://github.com/Imorate/You-Owe-Me-Backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Imorate/You-Owe-Me-Backend/actions/workflows/ci.yml)
 # You Owe Me - Backend
 ## Requirements
 [Requirements](doc/requirements.md)
