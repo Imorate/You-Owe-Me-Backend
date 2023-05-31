@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.7'
     id 'io.spring.dependency-management' version '1.1.0'
+    id "com.osacky.doctor" version "0.8.1"
 }
 
 group = 'ir.imorate'
