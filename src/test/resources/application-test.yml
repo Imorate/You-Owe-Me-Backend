@@ -1,9 +1,11 @@
-server:
-  port: 8080
+app:
+  name: You Owe Me
+  description: An accounting application among friends
+  version: 0.0.1
 
 spring:
   datasource:
-    name: DevDB
+    name: TestDB
     url: jdbc:mysql://localhost:3306/yom?createDatabaseIfNotExist=true
     username: yom
     password: yom
@@ -19,7 +21,3 @@ spring:
     init:
       mode: always
       data-locations: classpath:sql/data-*.sql
-
-logging:
-  level:
-    web: trace
