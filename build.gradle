@@ -47,3 +47,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+doctor {
+    negativeAvoidanceThreshold = 500
+}
