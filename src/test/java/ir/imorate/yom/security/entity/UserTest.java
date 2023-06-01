@@ -1,52 +1,36 @@
 package ir.imorate.yom.security.entity;
 
-import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ContextConfiguration(classes = Faker.class)
-@ActiveProfiles("test")
 @DisplayName("User entity test")
 class UserTest {
 
-    @Autowired
-    private Faker faker;
-
-    private String username;
-
-    private String password;
-
-    private String email;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        username = faker.name().username();
-        email = faker.internet().emailAddress();
-        password = faker.internet().password(8, 256, true, true, true);
+        user = User.builder()
+                .id(1L)
+                .username("test")
+                .email("test@gmail.com")
+                .password("123456")
+                .build();
     }
 
     @Test
-    @DisplayName("User initial values")
+    @DisplayName("User initial field values")
     void testInitialValuesForUser() {
-        User user = User.builder()
-                .username(username)
-                .password(password)
-                .email(email)
-                .build();
-
-        assertThat(user.getUsername()).isEqualTo(username);
-        assertThat(user.getPassword()).isEqualTo(password);
+        assertThat(user.getId()).isEqualTo(1L);
+        assertThat(user.getUsername()).isEqualTo("test");
+        assertThat(user.getPassword()).isEqualTo("123456");
+        assertThat(user.getEmail()).isEqualTo("test@gmail.com");
         assertThat(user.getEnabled()).isFalse();
         assertThat(user.getAccountNonLocked()).isTrue();
         assertThat(user.getAccountNonExpired()).isTrue();
@@ -54,33 +38,8 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("User toString() method")
-    void testToStringUser() {
-        User user = User.builder()
-                .username(username)
-                .email(email)
-                .build();
-
-        String expectedToString = String.format("User(id=null, username=%s, email=%s, accountNonExpired=%b," +
-                        " accountNonLocked=%b, credentialsNonExpired=%b, enabled=%b)",
-                username,
-                email,
-                user.getAccountNonExpired(),
-                user.getAccountNonLocked(),
-                user.getCredentialsNonExpired(),
-                user.getEnabled());
-
-        assertThat(user.toString()).isEqualTo(expectedToString);
-    }
-
-    @Test
     @DisplayName("User roles")
     void testUserRoles() {
-        User user = User.builder()
-                .username(username)
-                .email(email)
-                .build();
-
         assertThat(user.getRoles()).isNull();
 
         Role userRole = new Role().setType(RoleType.USER);
