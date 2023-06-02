@@ -34,7 +34,7 @@ class UserMapperTest {
 
     @Test
     @DisplayName("Mapper to user entity")
-    void toUser() {
+    void shouldMapperMapsToUser() {
         CreateUserRequest request = null;
 
         assertThat(userMapper.toUser(request)).isNull();
@@ -47,7 +47,7 @@ class UserMapperTest {
 
     @Test
     @DisplayName("Mapper to request")
-    void toCreateUserRequest() {
+    void shouldMapperMapsToRequest() {
         User nullUser = null;
 
         assertThat(userMapper.toCreateUserRequest(nullUser)).isNull();
