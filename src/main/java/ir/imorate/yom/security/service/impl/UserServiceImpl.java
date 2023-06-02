@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,16 +29,15 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Override
-    public User findUser(String username) {
-        return userRepository
-                .findByUsernameIgnoreCase(username)
-                .orElseThrow(ResourceNotFoundException::new);
+    public Optional<User> findUser(String username) {
+        return userRepository.findByUsernameIgnoreCase(username);
     }
 
     @Override
     @Transactional
     public void createUser(CreateUserRequest request, RoleType roleType) {
-        Role role = roleService.findRole(roleType);
+        Role role = roleService.findRole(roleType)
+                .orElseThrow(() -> new ResourceNotFoundException(roleType.getTitle()));
         User user = userMapper.toUser(request);
         String password = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(password);

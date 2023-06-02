@@ -4,9 +4,11 @@ import ir.imorate.yom.security.entity.RoleType;
 import ir.imorate.yom.security.entity.User;
 import ir.imorate.yom.security.request.CreateUserRequest;
 
+import java.util.Optional;
+
 public interface UserService {
 
-    User findUser(String username);
+    Optional<User> findUser(String username);
 
     void createUser(CreateUserRequest request, RoleType roleType);
 
