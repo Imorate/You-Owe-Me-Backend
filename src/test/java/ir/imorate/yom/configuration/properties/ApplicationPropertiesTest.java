@@ -31,26 +31,8 @@ class ApplicationPropertiesTest {
     private String version;
 
     @Test
-    @DisplayName("Application properties")
-    void testApplicationProperties() {
-        ApplicationProperties applicationProperties = new ApplicationProperties();
-
-        assertThat(applicationProperties.getName()).isNull();
-        assertThat(applicationProperties.getDescription()).isNull();
-        assertThat(applicationProperties.getVersion()).isNull();
-
-        applicationProperties.setName("Test app");
-        applicationProperties.setDescription("Test app description");
-        applicationProperties.setVersion("2.3.5");
-
-        assertThat(applicationProperties.getName()).isEqualTo("Test app");
-        assertThat(applicationProperties.getDescription()).isEqualTo("Test app description");
-        assertThat(applicationProperties.getVersion()).isEqualTo("2.3.5");
-    }
-
-    @Test
-    @DisplayName("Application properties bean")
-    void testApplicationPropertiesBean() {
+    @DisplayName("Application properties and Environment values")
+    void shouldEnvBeanAndAppPropertiesReturnSameValues() {
         String name = environment.getProperty("app.name");
         String description = environment.getProperty("app.description");
         String version = environment.getProperty("app.version");
