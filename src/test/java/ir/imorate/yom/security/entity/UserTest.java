@@ -25,8 +25,9 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("User initial field values")
-    void testInitialValuesForUser() {
+    @DisplayName("User initial fields value")
+    void shouldFieldsValueBeValid() {
+        assertThat(user).isNotNull();
         assertThat(user.getId()).isEqualTo(1L);
         assertThat(user.getUsername()).isEqualTo("test");
         assertThat(user.getPassword()).isEqualTo("123456");
@@ -38,12 +39,14 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("User roles")
-    void testUserRoles() {
+    @DisplayName("User role values and sizes")
+    void shouldRolesMatchExpectedValuesAndSizes() {
         assertThat(user.getRoles()).isNull();
 
-        Role userRole = new Role().setType(RoleType.USER);
-        Role adminRole = new Role().setType(RoleType.ADMIN);
+        Role userRole = new Role()
+                .setType(RoleType.USER);
+        Role adminRole = new Role()
+                .setType(RoleType.ADMIN);
         user.setRoles(Set.of(userRole));
 
         assertThat(user.getRoles())
@@ -56,11 +59,16 @@ class UserTest {
         assertThat(user.getRoles())
                 .hasSize(2)
                 .contains(userRole, adminRole);
+    }
 
+    @Test
+    @DisplayName("User empty role")
+    void shouldRoleSetBeEmpty() {
         user.setRoles(Collections.emptySet());
 
         assertThat(user.getRoles())
                 .hasSize(0)
                 .isNullOrEmpty();
     }
+
 }
