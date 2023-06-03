@@ -1,8 +1,3 @@
-app:
-  name: You Owe Me
-  description: An accounting application among friends
-  version: 0.0.1
-
 spring:
   datasource:
     name: TestDB

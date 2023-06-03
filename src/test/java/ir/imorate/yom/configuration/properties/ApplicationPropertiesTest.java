@@ -10,7 +10,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "app.name=You Owe Me",
+        "app.description=An accounting application among friends",
+        "app.version=0.0.1"
+})
 @ActiveProfiles("test")
 @DisplayName("Application properties test")
 class ApplicationPropertiesTest {
