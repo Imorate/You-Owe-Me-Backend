@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@DisplayName("User service test")
+@DisplayName("Role service test")
 class RoleServiceTest {
 
     @Mock
@@ -39,8 +39,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Find role")
     void shouldFindRole() {
-        when(roleRepository.findByType(RoleType.USER))
-                .thenReturn(Optional.of(role));
+        when(roleRepository.findByType(RoleType.USER)).thenReturn(Optional.of(role));
 
         Optional<Role> optionalRole = roleService.findRole(RoleType.USER);
 
