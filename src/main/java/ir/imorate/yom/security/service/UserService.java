@@ -10,8 +10,10 @@ public interface UserService {
 
     Optional<User> findUser(String username);
 
+    Optional<User> findUser(long id);
+
     void createUser(CreateUserRequest request, RoleType roleType);
 
-    void enableUser(User user);
+    void enableUser(long id);
 
 }
