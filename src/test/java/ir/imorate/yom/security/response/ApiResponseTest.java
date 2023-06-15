@@ -47,14 +47,14 @@ class ApiResponseTest {
     @Test
     @DisplayName("Deserialization")
     void testDeserialization() throws IOException {
-        String jsonSb = "{" +
+        String json = "{" +
                 "\"timestamp\":\"" + localDateTime + "\"," +
                 "\"reason\":\"Test reason\"," +
                 "\"message\":\"Test message\"," +
                 "\"developerMessage\":\"Hello from developer\"," +
                 "\"data\":\"Sample data\"" +
                 "}";
-        assertThat(json.parse(jsonSb))
+        assertThat(this.json.parse(json))
                 .usingRecursiveComparison()
                 .isEqualTo(response);
     }
