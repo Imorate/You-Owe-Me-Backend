@@ -69,6 +69,7 @@ class RoleServiceTest {
     }
 
     @Test
+    @DisplayName("Map Role set to String set")
     void shouldReturnStringSetFromRoleSet() {
         Set<Role> roleSet = Set.of(
                 new Role().setId(1).setType(RoleType.USER).setDescription("User role"),
@@ -78,7 +79,6 @@ class RoleServiceTest {
         assertThat(stringSet)
                 .hasSize(2)
                 .contains(RoleType.USER.getTitle(), RoleType.ADMIN.getTitle());
-
     }
 
     private void assertRoleFields(Role role) {
