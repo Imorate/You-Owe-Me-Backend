@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,16 +47,16 @@ public class UserServiceImpl implements UserService {
         String username = request.username();
         Role role = roleService.findRole(roleType)
                 .orElseThrow(() -> new RoleNotFoundException(roleType.getTitle()));
-        findUser(username).ifPresent(user1 -> {
-            throw new UserExistsException(username);
+        findUser(username).ifPresent((user) -> {
+            throw new UserExistsException(user.getUsername());
         });
-        User createdUser = userMapper.toUser(request);
-        String password = bCryptPasswordEncoder.encode(createdUser.getPassword());
-        createdUser.setPassword(password);
-        createdUser.setRoles(Set.of(role));
-        userRepository.save(createdUser);
-        Set<String> createdUserRoles = mapRolesToStringSet(createdUser.getRoles());
-        log.info("User with username '{}' and roles {} created", createdUser.getUsername(), createdUserRoles);
+        User user = userMapper.toUser(request);
+        String password = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(password);
+        user.setRoles(Set.of(role));
+        userRepository.save(user);
+        Set<String> createdUserRoles = roleService.toStringSet(user.getRoles());
+        log.info("User with username '{}' and roles {} created", user.getUsername(), createdUserRoles);
     }
 
     @Override
@@ -71,13 +70,6 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         userRepository.save(user);
         log.info("User with username '{}' enabled", user.getUsername());
-    }
-
-    private Set<String> mapRolesToStringSet(Set<Role> roleSet) {
-        return roleSet
-                .stream()
-                .map(r -> r.getType().getTitle())
-                .collect(Collectors.toSet());
     }
 
 }

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,14 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Optional<Role> findRole(RoleType roleType) {
         return roleRepository.findByType(roleType);
+    }
+
+    @Override
+    public Set<String> toStringSet(Set<Role> roleSet) {
+        return roleSet
+                .stream()
+                .map(r -> r.getType().getTitle())
+                .collect(Collectors.toSet());
     }
 
 }

@@ -11,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -39,13 +41,44 @@ class RoleServiceTest {
     @Test
     @DisplayName("Find role")
     void shouldFindRole() {
-        when(roleRepository.findByType(RoleType.USER)).thenReturn(Optional.of(role));
+        RoleType roleType = RoleType.USER;
+        when(roleRepository.findByType(roleType)).thenReturn(Optional.of(role));
 
-        Optional<Role> optionalRole = roleService.findRole(RoleType.USER);
+        Optional<Role> optionalRole = roleService.findRole(roleType);
 
         assertTrue(optionalRole.isPresent());
         assertRoleFields(optionalRole.get());
-        verify(roleRepository, times(1)).findByType(RoleType.USER);
+        verify(roleRepository).findByType(
+                argThat(roleType::equals)
+        );
+    }
+
+    @Test
+    @DisplayName("Find empty optional role")
+    void shouldFindEmptyOptionalRole() {
+        // Assert that User role is not present
+        RoleType roleType = RoleType.USER;
+        when(roleRepository.findByType(roleType)).thenReturn(Optional.empty());
+
+        Optional<Role> optionalRole = roleService.findRole(roleType);
+
+        assertFalse(optionalRole.isPresent());
+        verify(roleRepository).findByType(
+                argThat(roleType::equals)
+        );
+    }
+
+    @Test
+    void shouldReturnStringSetFromRoleSet() {
+        Set<Role> roleSet = Set.of(
+                new Role().setId(1).setType(RoleType.USER).setDescription("User role"),
+                new Role().setId(2).setType(RoleType.ADMIN).setDescription("Admin role")
+        );
+        Set<String> stringSet = roleService.toStringSet(roleSet);
+        assertThat(stringSet)
+                .hasSize(2)
+                .contains(RoleType.USER.getTitle(), RoleType.ADMIN.getTitle());
+
     }
 
     private void assertRoleFields(Role role) {

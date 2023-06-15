@@ -22,33 +22,27 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("User service test")
 class UserServiceTest {
 
+    private final CreateUserRequest request = new CreateUserRequest("test", "123456", "test@mail.com");
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Mock
     private UserMapper userMapper;
-
     @Mock
     private RoleService roleService;
-
     @InjectMocks
     private UserServiceImpl userService;
-
     @Captor
     private ArgumentCaptor<User> acUser;
-
     private User user;
-
     private Role role;
 
     @BeforeEach
@@ -72,68 +66,80 @@ class UserServiceTest {
     void shouldFindUser() {
         String username = "test";
 
-        when(userRepository.findByUsernameIgnoreCase(user.getUsername())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
 
         Optional<User> optionalUser = userService.findUser(username);
 
-        ArgumentCaptor<String> acUsername = ArgumentCaptor.forClass(String.class);
         assertThat(optionalUser.isPresent()).isTrue();
         assertUserFields(optionalUser.get());
-        verify(userRepository, times(1)).findByUsernameIgnoreCase(acUsername.capture());
-        assertThat(username).isEqualTo(acUsername.getValue());
+        verify(userRepository).findByUsernameIgnoreCase(
+                argThat(arg -> arg.equals(username))
+        );
+    }
+
+    @Test
+    @DisplayName("Find empty optional user")
+    void shouldFindEmptyOptionalUser() {
+        String username = "test";
+
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.empty());
+
+        Optional<User> optionalUser = userService.findUser(username);
+
+        assertFalse(optionalUser.isPresent());
+        verify(userRepository).findByUsernameIgnoreCase(
+                argThat(arg -> arg.equals(username))
+        );
     }
 
     @Test
     @DisplayName("Create user")
     void shouldCreateUser() {
         user.setRoles(Collections.emptySet());
-        CreateUserRequest request = new CreateUserRequest("test", "123456", "test@mail.com");
         String encodedPassword = "$2a$10$mpD2XNUhPmpV6y3mJTLN0OYutvaW0Konhgp6nADu6cj5ECN2Elxw.";
         RoleType roleType = RoleType.USER;
 
         when(roleService.findRole(roleType)).thenReturn(Optional.of(role));
+        when(userService.findUser(request.username())).thenReturn(Optional.empty());
         when(userMapper.toUser(request)).thenReturn(user);
         when(bCryptPasswordEncoder.encode("123456")).thenReturn(encodedPassword);
-        when(userService.findUser(request.username())).thenReturn(Optional.empty());
 
         userService.createUser(request, roleType);
 
-        ArgumentCaptor<RoleType> acRoleType = ArgumentCaptor.forClass(RoleType.class);
-        ArgumentCaptor<CreateUserRequest> acRequest = ArgumentCaptor.forClass(CreateUserRequest.class);
-        ArgumentCaptor<String> acPassword = ArgumentCaptor.forClass(String.class);
-        verify(roleService, times(1)).findRole(acRoleType.capture());
-        verify(userMapper, times(1)).toUser(acRequest.capture());
-        verify(bCryptPasswordEncoder, times(1)).encode(acPassword.capture());
-        verify(userRepository, times(1)).save(acUser.capture());
+        verify(roleService).findRole(
+                argThat(roleType::equals)
+        );
+        verify(userMapper).toUser(
+                argThat(request::equals)
+        );
+        verify(bCryptPasswordEncoder).encode(
+                argThat(arg -> request.password().contentEquals(arg))
+        );
+        verify(userRepository).save(acUser.capture());
         assertUserFields(acUser.getValue());
-        assertThat(roleType).isEqualTo(acRoleType.getValue());
-        assertThat(request).isEqualTo(acRequest.getValue());
-        assertThat(request.password()).isEqualTo(acPassword.getValue());
-    }
-
-    @Test
-    @DisplayName("Create user that exists")
-    void shouldThrowExceptionOnCreatingExistingUsername() {
-        CreateUserRequest request = new CreateUserRequest("test", "123456", "test@mail.com");
-        RoleType roleType = RoleType.USER;
-
-        when(roleService.findRole(roleType)).thenReturn(Optional.of(role));
-        when(userService.findUser(request.username())).thenReturn(Optional.of(user));
-        assertThrows(ResourceExistsException.class, () -> userService.createUser(request, roleType));
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     @DisplayName("Create user with unknown RoleType")
     void shouldThrowExceptionWhenUserHasUnknownRoleType() {
-        //shouldNotCreateUserAndThrowResourceNotFoundForRole
-        CreateUserRequest request = new CreateUserRequest("test", "123456", "test@mail.com");
-
         // This is a default value for RoleType for demonstration unknown value
         RoleType roleType = RoleType.USER;
 
         when(roleService.findRole(roleType)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> userService.createUser(request, roleType));
+        assertThatThrownBy(() -> userService.createUser(request, roleType))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Create user that exists")
+    void shouldThrowExceptionOnCreatingExistingUsername() {
+        RoleType roleType = RoleType.USER;
+
+        when(roleService.findRole(roleType)).thenReturn(Optional.of(role));
+        when(userService.findUser(request.username())).thenReturn(Optional.of(user));
+        assertThatThrownBy(() -> userService.createUser(request, roleType))
+                .isInstanceOf(ResourceExistsException.class);
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -142,7 +148,7 @@ class UserServiceTest {
     void shouldEnableUser() {
         when(userService.findUser(user.getId())).thenReturn(Optional.of(user));
         assertDoesNotThrow(() -> userService.enableUser(user.getId()));
-        verify(userRepository, times(1)).save(acUser.capture());
+        verify(userRepository).save(acUser.capture());
         assertUserFields(acUser.getValue());
     }
 
