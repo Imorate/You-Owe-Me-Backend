@@ -70,7 +70,7 @@ class UserServiceTest {
 
         Optional<User> optionalUser = userService.findUser(username);
 
-        assertThat(optionalUser.isPresent()).isTrue();
+        assertTrue(optionalUser.isPresent());
         assertUserFields(optionalUser.get());
         verify(userRepository).findByUsernameIgnoreCase(
                 argThat(arg -> arg.equals(username))
